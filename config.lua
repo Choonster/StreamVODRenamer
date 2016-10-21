@@ -13,6 +13,15 @@ local function number(numDigits)
 	return X(locale.digit, numDigits) / tonumber
 end
 
+-- Matches at least one digit and captures as a number
+local anyNumber = locale.digit^1 / tonumber
+
+-- Match a pattern anywhere in the subject string
+-- http://www.inf.puc-rio.br/~roberto/lpeg/lpeg.html#ex
+local function anywhere(p)
+  return lpeg.P{ p + 1 * lpeg.V(1) }
+end
+
 local CONFIG = {}
 
 ---------------------
@@ -29,7 +38,7 @@ CONFIG.DATE_PATTERN = number(4) * number(2) * number(2) * " - " -- "<year><month
 CONFIG.DATE_FORMAT = "%Y-%m-%d - " -- "<year>-<month>-<day> - "
 
 -- The index pattern to look for in the file names
-CONFIG.INDEX_PATTERN = "X of " * (locale.digit^1 / tonumber) * " - " -- "X of <number> - "
+CONFIG.INDEX_PATTERN = "X of " * anyNumber * " - " -- "X of <number> - "
 
 -- The index format to output (passed to string.format)
 CONFIG.INDEX_FORMAT = "%d of %d - " -- "<current> of <max> - "
@@ -46,6 +55,9 @@ CONFIG.FILE_PATTERN = (
 	CONFIG.INDEX_PATTERN^-1 * -- Index (0 or 1 times)
 	CONFIG.GAME_PATTERN -- Game
 )
+
+-- The ID pattern to use in the index sorting
+CONFIG.ID_PATTERN = anywhere(lpeg.P("v") * anyNumber)
 
 -- Whether to output command text
 CONFIG.SHOW_COMMANDS = false

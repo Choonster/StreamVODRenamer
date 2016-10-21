@@ -196,19 +196,31 @@ local function renameFiles(dirname, checkSubdirs)
 	printf("Entering directory %s...", dirname)
 
 	local mask = dirname .. "\\*"
-	local index = 1
-
-	-- Iterate through the files in this directory and rename any that match the pattern
+	
+	local vodFiles = {}
+	
+	-- Iterate through the files in this directory and collect any that match the pattern
 	-- Uses winapi.files instead of lfs.dir because it supports Unicode on Windows
 	for file in files(mask, false, "-D") do
 		local fullPath = path.join(dirname, file)
 
-		-- If the file matches the pattern, rename it
-		if CONFIG.FILE_PATTERN:match(file) then
-			renameFile(fullPath, index)
-
-			index = index + 1
+		-- If the file matches the pattern, collect it
+		if CONFIG.FILE_PATTERN:match(file) and CONFIG.ID_PATTERN:match(file) then
+			table.insert(vodFiles, fullPath)
 		end
+	end
+	
+	-- Sort the files by their ID
+	table.sort(vodFiles, function(file1, file2)
+		local id1 = CONFIG.ID_PATTERN:match(file1)
+		local id2 = CONFIG.ID_PATTERN:match(file2)
+		
+		return id1 < id2
+	end)
+	
+	-- Rename all matching files
+	for index, fullPath in ipairs(vodFiles) do
+		renameFile(fullPath, index)
 	end
 
 	-- If this is the top-level directory and we're checking subdirectories, rename the files in each subdirectory
