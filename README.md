@@ -2,7 +2,7 @@
 
 Replaces the literal text `GAME` in the file names of stream VOD downloads with the actual game name (detected from the file name) and adds separators to dates. Also fixes AAC streams so Windows can display the videos' lengths and thumbnails.
 
-Designed to rename VODs downloaded by [twitch_vod_fetch](https://github.com/Choonster/twitch_vod_fetch).
+Designed to rename VODs downloaded by [twitch_vod_fetch](https://github.com/Choonster/fgtk#twitch-vod-fetch).
 
 This script was created for my own use, it may or may not be of any use to you.
 
@@ -25,7 +25,7 @@ The **config.lua** file contains the other configuration options.
 
 REM Download the VODs
 REM I recommend downloading the temporary files to an SSD (the DownloadTemp directory) and outputting the final VOD to a larger HDD (the LivestreamDownloads directory)
-python twitch_vod_fetch.py --output-format "C:\Users\USER\Downloads\LivestreamDownloads\%%(uploader)s\%%(upload_date)s - GAME - %%(title)s - %%(id)s.%%(ext)s" ^
+python twitch_vod_fetch.py --ytdl-output-format "C:\Users\USER\Downloads\LivestreamDownloads\%%(uploader)s\%%(upload_date)s - GAME - %%(title)s - %%(id)s.%%(ext)s" ^
 	https://www.twitch.tv/bob/v/12344321 "DownloadTemp/Bob" ^
 	https://www.twitch.tv/fred/v/43211234 "DownloadTemp/Fred"
 
